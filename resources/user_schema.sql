@@ -1,4 +1,4 @@
--- MySQL Workbench Forward Engineering
+-user- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `ssafytrip`.`user` ;
 CREATE TABLE IF NOT EXISTS `ssafytrip`.`user` (
   `user_id` VARCHAR(16) NOT NULL,
   `user_name` VARCHAR(20) NOT NULL,
-  `user_password` VARCHAR(16) NOT NULL,
+  `user_password` VARCHAR(128) NOT NULL,
   `user_email` VARCHAR(50) NULL DEFAULT NULL,
   `user_gender` VARCHAR(10) NULL DEFAULT NULL,
   `user_addr` VARCHAR(50) NULL DEFAULT NULL,

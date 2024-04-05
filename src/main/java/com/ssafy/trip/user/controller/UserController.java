@@ -2,6 +2,9 @@ package com.ssafy.trip.user.controller;
 
 import java.io.IOException;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import com.ssafy.trip.user.model.*;
 import com.ssafy.trip.user.model.dto.UserDto;
 import com.ssafy.trip.user.model.service.UserService;
@@ -24,37 +27,58 @@ public class UserController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getParameter("action");
-		System.out.println("dl");
 		String path = "";
-		System.out.println(action);
-		if (action.equals("login")) {
-			path = login(request, response);
-			redirect(request, response, path);
-		} else if (action.equals("logout")) {
-			System.out.println("logout");
-			path = logout(request, response);
-			redirect(request, response, path);
-		} else if (action.equals("mvjoin")) {
-			path = "/user/join.jsp";
-			redirect(request, response, path);
-		} else if (action.equals("join")) {
-			path = join(request, response);
-			redirect(request, response, path);
-		} else if (action.equals("mvfindpw")) {
-			path = "/user/findPw.jsp";
-			redirect(request, response, path);
-		} else if (action.equals("findpw")) {
-			path = findPw(request, response);
+		try {
+			System.out.println(action);
+			switch (action) {
+				case "login":
+					path = login(request, response);
+					redirect(request, response, path);
+					break;
+				case "logout":
+					System.out.println("logout");
+					path = logout(request, response);
+					redirect(request, response, path);
+					break;
+				case "mvjoin":
+					path = "/user/join.jsp";
+					redirect(request, response, path);
+					break;
+				case "join":
+					path = join(request, response);
+					redirect(request, response, path);
+					break;
+				case "mvfindpw":
+					path = "/user/findPw.jsp";
+					redirect(request, response, path);
+					break;
+				case "findpw":
+					path = findPw(request, response);
+					forward(request, response, path);
+					break;
+				case "mvmodify":
+					path = "/user/modify.jsp";
+					forward(request, response, path);
+					break;
+				case "modify":
+					path = modify(request, response);
+					redirect(request, response, path);
+					break;
+				case "delete":
+					path = delete(request, response);
+					redirect(request, response, path);
+					break;
+				default:
+					// 알 수 없는 액션에 대한 처리
+					path = "/error.jsp";
+					forward(request, response, path);
+					break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace(); // 서버 로그에 예외를 기록
+			request.setAttribute("errorMessage", "처리 중 오류가 발생했습니다.");
+			path = "/error.jsp"; // 오류 페이지로 이동
 			forward(request, response, path);
-		} else if (action.equals("mvmodify")) {
-			path = "/user/modify.jsp";
-			forward(request, response, path);
-		} else if (action.equals("modify")) {
-			path = modify(request, response);
-			redirect(request, response, path);
-		} else if (action.equals("delete")) {
-			path = delete(request, response);
-			redirect(request, response, path);
 		}
 	}
 
@@ -74,13 +98,31 @@ public class UserController extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
+	private String hashPassword(String password) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(password.getBytes());
+		byte[] digest = md.digest();
+		StringBuilder hexString = new StringBuilder();
+		for (byte b : digest) {
+			String hex = Integer.toHexString(0xff & b);
+			if (hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+		return hexString.toString();
+	}
+
 	private String login(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+			throws ServletException, IOException, NoSuchAlgorithmException {
 		String userId = request.getParameter("userid");
 		String userPwd = request.getParameter("userpwd");
-		System.out.println(userId + " " + userPwd);
+		// 입력된 비밀번호를 해시합니다.
+		String hashedPassword = hashPassword(userPwd);
+		System.out.println(userId + " " + hashedPassword); // 로그인 시도 정보를 로그로 남깁니다.
 		UserService userService = UserServiceImpl.getInstance();
-		UserDto user = userService.login(userId, userPwd);
+		// userService.login 메서드가 해시된 비밀번호를 사용하도록 수정해야 합니다.
+		UserDto user = userService.login(userId, hashedPassword);
 		if (user != null) {
 			System.out.println(user);
 			HttpSession session = request.getSession();
@@ -88,13 +130,16 @@ public class UserController extends HttpServlet {
 			String saveid = request.getParameter("saveid");
 			if (saveid != null) {
 				Cookie cookie = new Cookie("tripid", userId);
-				cookie.setMaxAge(60 * 60 * 24 * 7);
+				cookie.setMaxAge(60 * 60 * 24 * 7); // 1주일
 				response.addCookie(cookie);
 			} else {
-				for (Cookie cookie : request.getCookies()) {
-					if (cookie.getName().equals("tripid")) {
-						cookie.setMaxAge(0);
-						response.addCookie(cookie);
+				Cookie[] cookies = request.getCookies();
+				if (cookies != null) {
+					for (Cookie cookie : cookies) {
+						if (cookie.getName().equals("tripid")) {
+							cookie.setMaxAge(0); // 쿠키 삭제
+							response.addCookie(cookie);
+						}
 					}
 				}
 			}
@@ -113,11 +158,12 @@ public class UserController extends HttpServlet {
 	}
 
 	private String join(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+			throws ServletException, IOException, NoSuchAlgorithmException {
 		UserDto userDto = new UserDto();
 		System.out.println(request.getParameter("userid"));
 		userDto.setUserId(request.getParameter("userid"));
-		userDto.setUserPwd(request.getParameter("userpwd"));
+		String hashedPassword = hashPassword(request.getParameter("userpwd"));
+		userDto.setUserPwd(hashedPassword);
 		userDto.setUserName(request.getParameter("username"));
 		userDto.setUserEmail(request.getParameter("useremail"));
 		userDto.setUserAddr(request.getParameter("useraddr"));
