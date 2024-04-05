@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.ssafy.trip.algorithm.KMP;
 import com.ssafy.trip.algorithm.MergeSortByDistance;
 import com.ssafy.trip.algorithm.MergeSortByTitle;
 import com.ssafy.trip.attraction.model.dto.AttractionDto;
@@ -25,7 +26,7 @@ public class AttractionDaoImpl implements AttractionDao {
 	}
 
 	@Override
-	public String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType)
+	public String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType, String keyword)
 			throws SQLException {
 
 		Connection conn = null;
@@ -68,6 +69,12 @@ public class AttractionDaoImpl implements AttractionDao {
 		// JSON 형식으로 변환
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
+			
+			if (keyword != null && !keyword.isBlank()) {
+				int[] lps = KMP.getLPS(keyword);
+				list.removeIf(dto -> !KMP.match(dto.toString(), keyword, lps));
+			}
+
 			if (!list.isEmpty()) {
 				if (sortType == 1) {
 					// 리스트 이름 순으로 정렬

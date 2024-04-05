@@ -47,9 +47,10 @@ public class AttractionController extends HttpServlet {
 		double lat = Double.parseDouble(request.getParameter("lat"));
 		double lng = Double.parseDouble(request.getParameter("lng"));
 		int sortType = Integer.parseInt(request.getParameter("sortType"));
+		String keyword = request.getParameter("keyword");
 
 		try {
-			String result = attractionService.listMap(areaCode, contentTypeId, lat, lng, sortType);
+			String result = attractionService.listMap(areaCode, contentTypeId, lat, lng, sortType, keyword);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

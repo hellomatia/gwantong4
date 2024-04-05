@@ -146,4 +146,13 @@ public class AttractionDto {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
+
+	@Override
+	public String toString() {
+		return "AttractionDto [content_id=" + content_id + ", content_type_id=" + content_type_id + ", title=" + title
+				+ ", addr1=" + addr1 + ", addr2=" + addr2 + ", zipcode=" + zipcode + ", attraction_info=" + attraction_info
+				+ ", first_image=" + first_image + ", first_image2=" + first_image2 + ", readcount=" + readcount
+				+ ", sido_code=" + sido_code + ", gugun_code=" + gugun_code + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", mlevel=" + mlevel + ", distance=" + distance + "]";
+	}
 }

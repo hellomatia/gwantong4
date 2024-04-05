@@ -126,8 +126,9 @@
         var areaCode = document.getElementById('areaCode').value;
         var contentTypeId = document.getElementById('contentTypeId').value;
         var sortType = document.getElementById('sortType').value;
+        var keyword = document.getElementById('keyword').value;
 
-        var url = `${root}/attraction?action=map&areaCode=` + areaCode + `&contentTypeId=` + contentTypeId + `&lat=` + lat + `&lng=` + lng + `&sortType=` + sortType;
+        var url = `${root}/attraction?action=map&areaCode=` + areaCode + `&contentTypeId=` + contentTypeId + `&lat=` + lat + `&lng=` + lng + `&sortType=` + sortType + `&keyword=` + keyword;
 
         fetch(url)
             .then(response => response.json())

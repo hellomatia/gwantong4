@@ -122,6 +122,7 @@
                                     <option value="1">이름순</option>
                                     <option value="2">거리순</option>
                                 </select>
+                                <input type="text" id="keyword" placeholder="검색">
                                 <button onclick="searchTouristSpots()">검색</button>
                             </div>
                             <div id="container">

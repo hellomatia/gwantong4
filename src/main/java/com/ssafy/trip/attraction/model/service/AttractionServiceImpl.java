@@ -19,8 +19,9 @@ public class AttractionServiceImpl implements AttractionService {
 	}
 
 	@Override
-	public String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType) throws Exception {
-		return attractionDao.listMap(areaCode, contentTypeId, lat, lng, sortType);
+	public String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType, String keyword)
+			throws Exception {
+		return attractionDao.listMap(areaCode, contentTypeId, lat, lng, sortType, keyword);
 	}
 
 }
