@@ -17,6 +17,7 @@ public class AttractionDto {
 	private String latitude;
 	private String longitude;
 	private String mlevel;
+	private double distance;
 
 	public int getContent_id() {
 		return content_id;
@@ -138,4 +139,11 @@ public class AttractionDto {
 		this.mlevel = mlevel;
 	}
 
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 }

@@ -9,7 +9,8 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.ssafy.trip.algorithm.MergeSort;
+import com.ssafy.trip.algorithm.MergeSortByDistance;
+import com.ssafy.trip.algorithm.MergeSortByTitle;
 import com.ssafy.trip.attraction.model.dto.AttractionDto;
 import com.ssafy.util.DBUtil;
 
@@ -24,7 +25,8 @@ public class AttractionDaoImpl implements AttractionDao {
 	}
 
 	@Override
-	public String listMap(String areaCode, String contentTypeId) throws SQLException {
+	public String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType)
+			throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -67,8 +69,13 @@ public class AttractionDaoImpl implements AttractionDao {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			if (!list.isEmpty()) {
-				// 리스트 정렬
-				MergeSort.mergeSort(list, 0, list.size() - 1);
+				if (sortType == 1) {
+					// 리스트 이름 순으로 정렬
+					MergeSortByTitle.sort(list);
+				} else {
+					// 리스트 거리 순으로 정렬
+					MergeSortByDistance.sort(list, lat, lng);
+				}
 				// 리스트에 내용이 있는 경우에만 JSON 데이터 생성
 				StringBuilder jsonBuilder = new StringBuilder(
 						"{\"data\": {\"response\": {\"header\": {\"resultCode\": \"0000\"}, \"body\": {\"items\": {\"item\": [");

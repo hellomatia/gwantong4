@@ -19,18 +19,18 @@ public class AttractionController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private AttractionService attractionService;
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		attractionService = AttractionServiceImpl.getAttractionService();
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		String path = "";
 
-		if("map".equals(action)) {
+		if ("map".equals(action)) {
 			PrintWriter out = response.getWriter();
 			out.print(listMap(request, response));
 		}
@@ -39,15 +39,19 @@ public class AttractionController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
-	
-	private String listMap(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	private String listMap(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String areaCode = request.getParameter("areaCode");
 		String contentTypeId = request.getParameter("contentTypeId");
+		double lat = Double.parseDouble(request.getParameter("lat"));
+		double lng = Double.parseDouble(request.getParameter("lng"));
+		int sortType = Integer.parseInt(request.getParameter("sortType"));
 
 		try {
-			String result = attractionService.listMap(areaCode, contentTypeId);
+			String result = attractionService.listMap(areaCode, contentTypeId, lat, lng, sortType);
 			return result;
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";

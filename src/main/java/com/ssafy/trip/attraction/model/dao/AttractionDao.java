@@ -6,5 +6,5 @@ import java.util.List;
 import com.ssafy.trip.attraction.model.dto.AttractionDto;
 
 public interface AttractionDao {
-	String listMap(String areaCode, String contentTypeId) throws SQLException;
+	String listMap(String areaCode, String contentTypeId, double lat, double lng, int sortType) throws SQLException;
 }

@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.ssafy.trip.attraction.model.dto.AttractionDto;
 
-public class MergeSort {
+public class MergeSortByTitle {
 
-  public static void mergeSort(List<AttractionDto> list, int left, int right) {
+  public static void sort(List<AttractionDto> list) {
+    mergeSort(list, 0, list.size() - 1);
+  }
+
+  private static void mergeSort(List<AttractionDto> list, int left, int right) {
     if (left < right) {
       int mid = (left + right) / 2;
       mergeSort(list, left, mid);
@@ -16,7 +20,7 @@ public class MergeSort {
     }
   }
 
-  public static void merge(List<AttractionDto> list, int left, int mid, int right) {
+  private static void merge(List<AttractionDto> list, int left, int mid, int right) {
     int i = left;
     int j = mid + 1;
 
@@ -41,7 +45,7 @@ public class MergeSort {
     }
 
     for (int k = 0; k < temp.size(); k++) {
-        list.set(left + k, temp.get(k));
+      list.set(left + k, temp.get(k));
     }
   }
 }
