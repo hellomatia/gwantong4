@@ -46,3 +46,53 @@
 - 비어있지 않다면 리스트의 내용을 json데이터를 생성 합니다.
 - 생성된 데이터를 Merge sort(합병 정렬)로 이름순으로 정렬합니다.
 - 정렬된 결과를 사용자에게 보여 줍니다.
+
+## 적용 코드
+
+```java
+public class MergeSortByTitle {
+
+  public static void sort(List<AttractionDto> list) {
+    mergeSort(list, 0, list.size() - 1);
+  }
+
+  private static void mergeSort(List<AttractionDto> list, int left, int right) {
+    if (left < right) {
+      int mid = (left + right) / 2;
+      mergeSort(list, left, mid);
+      mergeSort(list, mid + 1, right);
+      merge(list, left, mid, right);
+    }
+  }
+
+  private static void merge(List<AttractionDto> list, int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+
+    List<AttractionDto> temp = new ArrayList<>();
+
+    while (i <= mid && j <= right) {
+      if (list.get(i).getTitle().compareTo(list.get(j).getTitle()) < 0) {
+        temp.add(list.get(i++));
+      } else {
+        temp.add(list.get(j++));
+      }
+    }
+
+    if (i > mid) {
+      while (j <= right) {
+        temp.add(list.get(j++));
+      }
+    } else {
+      while (i <= mid) {
+        temp.add(list.get(i++));
+      }
+    }
+
+    for (int k = 0; k < temp.size(); k++) {
+      list.set(left + k, temp.get(k));
+    }
+  }
+}
+
+```

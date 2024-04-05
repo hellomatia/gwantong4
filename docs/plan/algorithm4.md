@@ -28,3 +28,50 @@
 - 입력 받은 문자를 접두사와 접미사로 나누어 최대일치 부분을 점차 늘려 갑니다.
 
 - 검색한 문자와 최대일치 부분이 같은 결과를 사용자에게 보여 줍니다.
+
+## 적용 코드
+
+```java
+
+if (keyword != null && !keyword.isBlank()) {
+	int[] lps = KMP.getLPS(keyword);
+	list.removeIf(dto -> !KMP.match(dto.toString(), keyword, lps));
+}
+
+```
+
+```java
+public class KMP {
+
+  public static int[] getLPS(String pattern) {
+    int patternLen = pattern.length();
+    int[] lps = new int[patternLen];
+    int j = 0;
+    for (int i = 1; i < patternLen; i++) {
+      if (pattern.charAt(i) == pattern.charAt(j)) {
+        lps[i] = j + 1;
+        j++;
+      }
+    }
+    return lps;
+  }
+
+  public static boolean match(String text, String pattern, int[] lps) {
+    int textLen = text.length();
+    int patternLen = lps.length;
+    int j = 0;
+    for (int i = 0; i < textLen; i++) {
+      while (j > 0 && text.charAt(i) != pattern.charAt(j)) {
+        j = lps[j - 1];
+      }
+      if (text.charAt(i) == pattern.charAt(j)) {
+        j++;
+      }
+      if (j == patternLen) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+```
